@@ -39,6 +39,6 @@ const getAverageCubicWeight = filteredData => {
     result +=
       (size.width / 100) * (size.length / 100) * (size.height / 100) * 250;
   }
-  result = result / filteredData.length;
+  result = (result / filteredData.length).toFixed(2);
   return result;
 };

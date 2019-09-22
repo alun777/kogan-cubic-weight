@@ -1,9 +1,10 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actionCreators } from './store/index';
 import PropTypes from 'prop-types';
+import { Divider, Header, Icon } from 'semantic-ui-react';
 
-import { Divider, Header, Icon, Table } from 'semantic-ui-react';
+import TableItems from '../TableItems/TableItems';
 
 export class AverageCubicWeight extends Component {
   componentDidMount() {
@@ -11,56 +12,45 @@ export class AverageCubicWeight extends Component {
   }
 
   render() {
+    const { categorisedProducts, cubicWeight } = this.props;
     return (
-      <Fragment>
-        <div className='ui container'>
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='tag' />
-              Calculation result
-            </Header>
-          </Divider>
+      <div className='ui container'>
+        <Divider horizontal>
+          <Header as='h4'>
+            <Icon name='tag' />
+            Calculation result
+          </Header>
+        </Divider>
 
-          <p>
-            Doggie treats are good for all times of the year. Proven to be eaten
-            by 99.9% of all dogs worldwide.
-          </p>
+        <p>
+          {cubicWeight &&
+            `The average cubic weight for all products in the "Air Conditioners"
+              category equals ${cubicWeight}kg.`}
+        </p>
 
-          <Divider horizontal>
-            <Header as='h4'>
-              <Icon name='bar chart' />
-              Specifications
-            </Header>
-          </Divider>
+        <Divider horizontal>
+          <Header as='h4'>
+            <Icon name='bar chart' />
+            List of products
+          </Header>
+        </Divider>
 
-          <Table definition>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell width={2}>Size</Table.Cell>
-                <Table.Cell>1" x 2"</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Weight</Table.Cell>
-                <Table.Cell>6 ounces</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Color</Table.Cell>
-                <Table.Cell>Yellowish</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell>Odor</Table.Cell>
-                <Table.Cell>Not Much Usually</Table.Cell>
-              </Table.Row>
-            </Table.Body>
-          </Table>
-        </div>
-      </Fragment>
+        {categorisedProducts.map((item, index) => {
+          return (
+            <TableItems categorisedProducts={item} key={index}></TableItems>
+          );
+        })}
+      </div>
     );
   }
 }
 
 export const mapStateToProps = state => ({
-  products: state.getIn(['AverageCubicWeight', 'products'])
+  categorisedProducts: state.getIn([
+    'AverageCubicWeight',
+    'categorisedProducts'
+  ]),
+  cubicWeight: state.getIn(['AverageCubicWeight', 'cubicWeight'])
 });
 
 export const mapDispatchToProps = dispatch => ({
@@ -70,7 +60,10 @@ export const mapDispatchToProps = dispatch => ({
   }
 });
 
-AverageCubicWeight.propTypes = {};
+AverageCubicWeight.propTypes = {
+  categorisedProducts: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  cubicWeight: PropTypes.string.isRequired
+};
 
 export default connect(
   mapStateToProps,
